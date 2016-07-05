@@ -120,7 +120,7 @@ class LtiConsumer(object):
             u'oauth_callback': u'about:blank',
             u'launch_presentation_return_url': '',
             u'lti_message_type': u'basic-lti-launch-request',
-            u'lti_version': 'LTI-1p0',
+            u'lti_version': 'LTI-1p1',
             u'roles': self.xblock.role,
 
             # Parameters required for grading:
@@ -129,6 +129,10 @@ class LtiConsumer(object):
 
             u'context_id': self.xblock.context_id,
             u'custom_component_display_name': self.xblock.display_name,
+
+            # Parameters recomended for identifying the source
+            u'tool_consumer_info_product_family_code': 'openedx',
+            u'tool_consumer_instance_guid': self.xblock.tool_consumer_instance_guid,
         }
 
         if self.xblock.due:

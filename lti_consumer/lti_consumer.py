@@ -230,6 +230,8 @@ class LtiConsumerXBlock(StudioEditableXBlockMixin, XBlock):
                 <input name="user_id" value="${user_id}" />
                 <input name="role" value="student" />
                 <input name="oauth_signature" value="${oauth_signature}" />
+                <input name="tool_consumer_info_product_family_code" value="openedx" />
+                <input name="tool_consumer_instance_guid" value="${tool_consumer_instance_guid}" />
 
                 <input name="custom_1" value="${custom_param_1_value}" />
                 <input name="custom_2" value="${custom_param_2_value}" />
@@ -561,6 +563,37 @@ class LtiConsumerXBlock(StudioEditableXBlockMixin, XBlock):
         The scheme logic is handled in lms/lib/xblock/runtime.py
         """
         return self.runtime.handler_url(self, "outcome_service_handler", thirdparty=True).rstrip('/?')
+
+    @property
+    def tool_consumer_info_product_family_code(self):
+        """
+        Return a code that identifies openedx as a tool consumer.
+
+        In order to better assist tools in using extensions and also making their user interface 
+        fit into the TC's user interface that they are being called from, each TC is encouraged 
+        to include the this parameter.
+        """
+        return "openedx"
+
+    @property
+    def tool_consumer_instance_guid(self):
+        """
+        Return a code that identifies the instance openedx as a tool consumer.
+
+        This is a unique identifier for the TC.  A common practice is to use the DNS of the organization 
+        or the DNS of the TC instance.  If the organization has multiple TC instances, then the best practice 
+        is to prefix the domain name with a locally unique identifier for the TC instance.
+
+        In the single-tenancy case, the tool consumer data can be often be derived from the oauth_consumer_key.
+
+        In a multi-tenancy case this can be used to differentiate between the multiple tenants within a 
+        single installation of a Tool Consumer.
+
+        This parameter is strongly recommended in systems capable of multi-tenancy.
+        """
+        return "{context}".format(
+            context=urllib.quote(self.context_id)
+        )
 
     @property
     def prefixed_custom_parameters(self):
